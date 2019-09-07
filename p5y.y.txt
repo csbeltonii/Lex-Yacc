@@ -1,0 +1,162 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+extern yylex();
+extern yytext[];
+extern FILE *yyin;
+%}
+%
+%start START
+%token  ( ) , [ ] UNION INTERSECT MINUS TIMES JOIN DIVIDEBY < > >= <= <> 0 1 2 3 4 5 6 7 8 9 CNO CITY CNAME SO PNO TQTY SNAME QUOTA PNAME COST AVQTY P# COLOR WEIGHT QTY where as rename
+%%
+START : EXPRESSION                                          {
+                                    printf("\nACCEPT\n");
+                                                            };
+EXPRESSION                      :   ONE-RELATION-EXPRESSION {    
+                                                            };
+                                |   TWO-RELATION-EXPRESSION {
+                                                            };
+ONE-RELATION-EXPRESSION         :   RENAMING                {
+                                                            };
+                                |   RESTRICTION             {
+                                                            };
+                                |   PROJECTION              {
+                                                            };
+RENAMING                        :   TERM rename ATTRIBUTE as ATTRIBUTE  {
+                                                                        };
+TERM                            :   RELATION                {
+                                                            };
+                                |   ( EXPRESSION )          {
+                                                            };
+RESTRICTION                     :   TERM where COMPARISON   {
+                                                            };
+PROJECTION                      :   TERM                    {
+                                                            };
+                                |   TERM [ ATTRIBUTE-COMMALIST ] {
+                                                                 };
+ATTRIBUTE-COMMALIST             :   ATTRIBUTE               {
+                                                            };
+                                |   ATTRIBUTE , ATTRIBUTE-COMMALIST {
+                                                                    };
+TWO-RELATION-EXPRESSION         :   PROJECTION BINARY-OPERATION EXPRESSION  {
+                                                                            };
+BINARY-OPERATION                :   UNION                   {
+                                                            };
+                                |   INTERFECT               {
+                                                            };
+                                |   MINUS                   {
+                                                            };
+                                |   TIMES                   {
+                                                            };
+                                |   JOIN                    {
+                                                            };
+                                |   DIVIDEBY                {
+                                                            };
+COMPARISON                      :   ATTRIBUTE COMPARE NUMBER    {
+                                                                };
+COMPARE                         :   <                       {
+                                                            };
+                                |   >                       {
+                                                            };
+                                |   <=                      {
+                                                            };
+                                |   >=                      {
+                                                            };
+                                |   =                       {
+                                                            };
+                                |   <>                      {
+                                                            };
+NUMBER                          :   VAL                     {
+                                                            };
+                                |   VAL NUMBER              {
+                                                            };
+VAL                             :   0                       {
+                                                            };
+                                |   1                       {
+                                                            };
+                                |   2                       {
+                                                            };
+                                |   3                       {
+                                                            };
+                                |   4                       {
+                                                            };
+                                |   5                       {
+                                                            };
+                                |   6                       {
+                                                            };
+                                |   7                       {
+                                                            };
+                                |   8                       {
+                                                            };
+                                |   9                       {
+                                                            };
+ATTRIBUTE                       :   CNO                     {
+                                                            };
+                                |   CNAME                   {
+                                                            };
+                                |   SNO                     {
+                                                            };
+                                |   PNO                     {
+                                                            };
+                                |   TQTY                    {
+                                                            };
+                                |   SNAME                   {
+                                                            };
+                                |   QUOTA                   {
+                                                            };
+                                |   PNAME                   {
+                                                            };
+                                |   COST                    {
+                                                            };
+                                |   AVQTY                   {
+                                                            };
+                                |   S#                      {
+                                                            };
+                                |   STATUS                  {
+                                                            };
+                                |   P#                      {
+                                                            };
+                                |   COLOR                   {
+                                                            };
+                                |   WEIGHT                  {
+                                                            };
+                                |   QTY                     {
+                                                            };
+RELATION                        :   S                       {
+                                                            };
+                                |   P                       {
+                                                            };
+                                |   SP                      {
+                                                            };
+                                |   PRDCT                   {
+                                                            };
+                                |   CUST                    {
+                                                            };
+                                |   ORDERS                  {
+                                                            };
+%%
+int main(int argc, char *argv[])
+{
+    yyin = fopen(argv[1], "r");
+    
+    if (!yyin)
+    {
+        printf("no file\n");
+        exit(0);
+    }
+
+    yyparse();
+}
+
+yyerror()
+{
+    printf("\nREJECT\n");
+    printf("Error from yyerror");
+    exit(0);
+}
+
+yywrap()
+{
+    printf("in yywrap\n");
+    exit(0);
+}

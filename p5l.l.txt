@@ -1,0 +1,27 @@
+%{
+#include "aa.tab.h"
+extern int yylval;
+%}
+Delimiter   [ \t\n]
+WhiteSpace  {Delimiter}+
+Digit   [0-9]
+BINARY-OPERATION UNION | INTERSECT | MINUS | TIMES | JOIN | DIVIDEBY
+ATTRIBUTE CNO|CITY | CNAME | SNO | PNO | TQTY | SNAME | QUOTA | PNAME | COST | AVQTY | S# | STATUS | P# | COLOR | WEIGHT | QTY
+RELATION S | P | SP | PRDCT | CUST | ORDERS
+COMPARE =< | >= | < | > | = | <>
+%%
+{WhiteSpace}                    ;
+{Digit}                         return(VAL);
+{COMPARE}                       return(COMPARE);
+{BINARY-OPERATION}              return(BINARY-OPERATION);
+{ATTRIBUTE}                     return(ATTRIBUTE);
+"["                             return("[");
+"]"                             return("]");
+"("                             return("(");
+")"                             return(")");
+","                             return(",");
+"where"                         return("where");
+"as"                            return("as");
+"rename"                        return("rename");
+"."                             return "\nREJECT\n";
+%%
